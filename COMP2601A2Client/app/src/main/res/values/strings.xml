@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">COMP2601A2Client</string>
+    <string name="menu_ui">Tic Tac Toe: Users</string>
+</resources>

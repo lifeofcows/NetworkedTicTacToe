@@ -11,4 +11,5 @@ public class Fields {
 	public static final long DEFAULT_SEQ_ID = -1L;
 	public static final String RECIPIENT = "RECIPIENT";
 	public static final String DEFAULT_RECIPIENT = "NULL_RECIPIENT";
+	public static final boolean PLAY = false;
 }

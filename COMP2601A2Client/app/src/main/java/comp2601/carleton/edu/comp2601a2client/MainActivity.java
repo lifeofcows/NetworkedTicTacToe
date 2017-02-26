@@ -15,8 +15,10 @@ public class MainActivity extends AppCompatActivity {
     static MainActivity mainInstance;
     TextView userStatus;
     Toast connected;
-
+    String userName;
+    public static boolean isFirst;
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -25,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
 
         userStatus = (TextView) findViewById(R.id.userStatus);
 
+        isFirst = true; //assume true in beginning
+        //popup modal dialogue/toast and prompt for user name, store name and connect (send CONNECT_REQUEST)
+
+        userName = "Bob"; //change to modal dialog input
+
+        //implement lazyadapter after you get stuff working
+
         s = new MessageService();
 
         new Thread(new Runnable() {
@@ -32,10 +41,9 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                    // s.connect(address.getText().toString(), Integer.parseInt(port.getText().toString()), name.getText().toString());
-
                     Message message = new Message();
                     message.header.type = "CONNECT_REQUEST";
-                    //message.header.id = name.getText().toString();
+                    message.header.id = userName;
                     s.request(message);
                     //display progress spinner until receiver responds
                 } catch (Exception e) {
@@ -49,6 +57,36 @@ public class MainActivity extends AppCompatActivity {
 
     public static MainActivity getInstance() {
         return mainInstance;
+    }
+
+    public void playGameRequest(String requester) {
+      //show modal dialog (requester wants to play game)
+      Message message = new Message();
+      message.header.type = "PLAY_GAME_RESPONSE";
+      message.header.id = userName;
+      if (true) {
+          message.header.play = true;
+      }
+        else {
+          message.header.play = false;
+      }
+      s.request(message);
+      if (message.header.play == true) {
+        isFirst = false;
+        Intent game = new Intent(this, GameActivity.class);
+        startActivity(game);
+      }
+    }
+
+    public void playGameResponse(String opponentName, boolean play) {
+      if (play) { //start new intent with game activity_main
+        Intent game = new Intent(this, GameActivity.class);
+        startActivity(game);
+      }
+      else {
+        String doesNotWantToPlay = opponentName + " does not want to play";
+        userStatus.setText(doesNotWantToPlay);
+      }
     }
 
     public void showConnectedToast() {

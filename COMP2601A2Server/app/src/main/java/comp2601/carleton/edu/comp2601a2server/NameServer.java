@@ -18,6 +18,16 @@ public class NameServer {
     ServerSocket listener;
     ServerSocket ss;
 
+    private void sendEmptyMessage(String message, ThreadWithReactor twr) {
+        try {
+            EventSource es = twr.getEventSource();
+            Event msg = new Event(message, es);
+            es.putEvent(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void add(String client, ThreadWithReactor twr) {
         clients.put(client, twr);
     }
@@ -29,59 +39,74 @@ public class NameServer {
     public void init() {
         try {
             Reactor r = new Reactor();
-            r.register("sendMessage", new EventHandler() {
+            r.register("CONNECT_REQUEST", new EventHandler() {
                 @Override
-                public void handleEvent(Event event) {
-                    try {
-                        ThreadWithReactor currTwr = clients.get(event.get(Fields.ID)); //get twr of the person sending the message
-                        EventStream currEs = currTwr.getEventSource(); //also get their eventsource
-                        ThreadWithReactor recTwr = clients.get(event.get(Fields.RECIPIENT));
-                        EventStream recEs = recTwr.getEventSource();
+                public void handleEvent(Event event) {  //do connect stuff; add to clients, add to active users, and after send CONNECTED_RESPONSE to user and USERS_UPDATED to all connected users
+                    //Iterate through hashmap to send message USERS_UPDATED to all the clients
+                    //clients.keySet();
+                    //Event usersUpdated = new Event("USERS_UPDATED", //custom twr.es)
 
-                        Serializable messageToSend = event.get(Fields.ID) + " says: " + currEs.getEvent().get(Fields.BODY);
-
-                        //send message to receiver
-                        Event sendEvent = new Event("receiveMessage", recEs); //String type, EventSource es
-                        sendEvent.put(Fields.BODY, messageToSend);
-                        recEs.putEvent(sendEvent);
-
-                        //send message to sender confirming message has been sent
-                        Event msgSent = new Event("messageSent", currEs);
-                        currEs.putEvent(msgSent);
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    sendEmptyMessage("CONNECTED_RESPONSE", clients.get(event.get(Fields.ID)));
                 }
             });
-            r.register("connection", new EventHandler() { //connect
+            r.register("PLAY_GAME_REQUEST", new EventHandler() { //send request to player indicated in the message
                 @Override
                 public void handleEvent(Event event) {
-                    try {
-                        String id = (String) event.get(Fields.ID);
-                        System.out.println(id + " is the id");
-                        ThreadWithReactor twr = (ThreadWithReactor) Thread.currentThread(); //gets clients thread
-                        EventStream es = twr.getEventSource(); //also get their eventsource
-                        add(id, twr);
-                        Event connected = new Event("connected", es); //String type, EventSource es
-                        es.putEvent(connected);
-                    }
-                    catch (Exception e) {
-                        System.out.println("Handling exception event in connection handler");
-                        e.printStackTrace();
-                    }
+                  try {
+                    ThreadWithReactor twr = clients.get(event.get(Fields.RECIPIENT));
+                    EventSource es = twr.getEventSource();
+                    Event msg = new Event("PLAY_GAME_REQUEST", es);
+                    msg.put(Fields.RECIPIENT, event.get(Fields.ID));
+                    es.putEvent(msg);
+                  }
+                  catch (Exception e) {
+                    e.printStackTrace();
+                  }
                 }
             });
-            r.register("termination", new EventHandler() { //terminate connection
+            r.register("PLAY_GAME_RESPONSE", new EventHandler() { //this method is only called on the person who initially requested the game
                 @Override
                 public void handleEvent(Event event) {
-                    try {
-                        String id = (String) event.get(Fields.ID);
-                        remove(id);
-                    }
-                    catch (Exception e) {
-                        System.out.println("Handling exception event in connection handler");
-                    }
+                    //maybe indicate that player is unavailable to play afterwards
+                    ThreadWithReactor twr = clients.get(event.get(Fields.RECIPIENT));
+                    EventSource es = twr.getEventSource();
+                    Event msg = new Event("PLAY_GAME_RESPONSE", es);
+                    msg.put(Fields.PLAY, event.get(Fields.PLAY));
+                    es.putEvent(msg);
+                    //sendMessage("PLAY_GAME_RESPONSE", clients.get(event.get(Fields.RECIPIENT)));
+                }
+            });
+            r.register("DISCONNECT_REQUEST", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                    sendEmptyMessage("DISCONNECT_RESPONSE", clients.get(event.get(Fields.ID)));
+                }
+            });
+            r.register("GAME_ON", new EventHandler() { //called by person who started game, given to other player
+                @Override
+                public void handleEvent(Event event) {
+                    // ThreadWithReactor twr = clients.get(event.get(Fields.RECIPIENT));
+                    // EventSource es = twr.getEventSource();
+                    // Event msg = new Event("GAME_ON", es);
+                    // //potentially send opponents name as well
+                    // es.putEvent(msg);
+                    sendEmptyMessage("GAME_ON", clients.get(event.get(Fields.RECIPIENT)));
+                }
+            });
+            r.register("MOVE_MESSAGE", new EventHandler() {
+                @Override
+                public void handleEvent(Event event) {
+                  ThreadWithReactor twr = clients.get(event.get(Fields.RECIPIENT));
+                  EventSource es = twr.getEventSource();
+                  Event msg = new Event("MOVE_MESSAGE", es);
+                  msg.put(Fields.MOVE, event.get(Fields.MOVE));
+                  es.putEvent(msg);
+                }
+            });
+            r.register("GAME_OVER", new EventHandler() { //TODO
+                @Override
+                public void handleEvent(Event event) {
+                    sendMessage("GAME_OVER", clients.get(event.get(Fields.RECIPIENT)));
                 }
             });
             run(r);

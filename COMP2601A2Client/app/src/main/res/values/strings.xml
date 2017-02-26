@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">COMP2601A2Client</string>
     <string name="menu_ui">Tic Tac Toe: Users</string>
+    <string name="userwin">Game is over. You won!</string>
+    <string name="userloss">Game is over. You lost!</string>
+    <string name="neutralgame">Game is over. It is a tie!</string>
+    <string name="startText">Click Start button to start game</string>
+    <string name="running">Click Start button to start game</string>
+    <string name="gameInProgress">Game in Progress...</string>
+    <string name="mainThreadException">Exception happened in the main thread</string>
+    <string name="button0Pressed">Button 0 Pressed</string>
+    <string name="button1Pressed">Button 1 Pressed</string>
+    <string name="button2Pressed">Button 2 Pressed</string>
+    <string name="button3Pressed">Button 3 Pressed</string>
+    <string name="button4Pressed">Button 4 Pressed</string>
+    <string name="button5Pressed">Button 5 Pressed</string>
+    <string name="button6Pressed">Button 6 Pressed</string>
+    <string name="button7Pressed">Button 7 Pressed</string>
+    <string name="button8Pressed">Button 8 Pressed</string>
 </resources>

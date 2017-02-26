@@ -2,9 +2,9 @@ package comp2601.carleton.edu.comp2601a2client;
 
 import java.util.ArrayList;
 
-//import static edu.carleton.COMP2601.a1.MainActivity.OMoves;
-//import static edu.carleton.COMP2601.a1.MainActivity.XMoves;
-//import static edu.carleton.COMP2601.a1.MainActivity.XOMoves;
+import static comp2601.carleton.edu.comp2601a2client.GameActivity.OMoves;
+import static comp2601.carleton.edu.comp2601a2client.GameActivity.XMoves;
+import static comp2601.carleton.edu.comp2601a2client.GameActivity.XOMoves;
 
 /**
  * Created by maximkuzmenko on 2017-02-24.

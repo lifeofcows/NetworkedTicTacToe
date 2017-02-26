@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,6 +19,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="comp2601.carleton.edu.comp2601a2client.GameActivity"></activity>
+
+        <service
+            android:name=".MessageService"
+            android:icon="@mipmap/ic_launcher"
+            android:label="yolo" >
+        </service>
+
+        <receiver android:name=".Receiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="com.example.maximkuzmenko.custom.intent.action.TEST"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

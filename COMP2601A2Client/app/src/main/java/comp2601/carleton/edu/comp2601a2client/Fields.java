@@ -10,6 +10,6 @@ public class Fields {
 	public static final String NO_ID = "NONE";
 	public static final long DEFAULT_SEQ_ID = -1L;
 	public static final String RECIPIENT = "RECIPIENT";
-	public static final String DEFAULT_RECIPIENT = "NULL_RECIPIENT";
-	public static final boolean PLAY = false;
+	public static final String PLAY = "PLAY";
+	public static final String MOVE = "MOVE";
 }

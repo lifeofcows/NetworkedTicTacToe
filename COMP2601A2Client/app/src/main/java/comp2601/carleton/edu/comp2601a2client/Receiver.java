@@ -10,23 +10,28 @@ import android.content.Intent;
 import android.os.CountDownTimer;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Receiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(MessageService.CUSTOM_INTENT)) {
+        if (MessageService.CUSTOM_INTENT.equals(intent.getAction())) {
             Message data = (Message) intent.getSerializableExtra("myKey");
+            System.out.println("Message in Receiver: " + data.header.type);
             if (data.header.type.equals("CONNECT_RESPONSE")) {
-                MainActivity.getInstance().showConnectedToast();
+               MainActivity.getInstance().showConnectedToast();
+                MainActivity.getInstance().dialog1.dismiss();
             }
             else if (data.header.type.equals("USERS_UPDATED")) { //Updates list of users currently connected
-              
+                MainActivity.getInstance().updateList((ArrayList<String>) data.body.getMap().get("userList"));
             }
             else if (data.header.type.equals("PLAY_GAME_REQUEST")) { //display yes/no modal dialog, send response back to server
                 MainActivity.getInstance().playGameRequest(data.header.recipient);
             }
             else if (data.header.type.equals("PLAY_GAME_RESPONSE")) { //if play yes, start new game, else show on textview that X does not want to play
-                MainActivity.getInstance().playGameResponse(data.header.play);
+                MainActivity.getInstance().playGameResponse(data.header.recipient,data.header.play);
             }
             else if (data.header.type.equals("DISCONNECT_RESPONSE")) { //disconnect and quit the app
 

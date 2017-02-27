@@ -13,13 +13,15 @@ public class Header implements Serializable {
 	public String type;		// Type of message (for reactor usage)
 	public String recipient;
 	public boolean play;
-	
+	public int move;
+
 	public Header() {
 		id = Fields.DEFAULT;
 		retId = Fields.DEFAULT;
 		type = Fields.NO_ID;
 		seqNo = Fields.DEFAULT_SEQ_ID;
-		recipient = Fields.DEFAULT_RECIPIENT;
-		play = Fields.PLAY;
+		recipient = Fields.DEFAULT;
+		play = false;
+		move = -1;
 	}
 }

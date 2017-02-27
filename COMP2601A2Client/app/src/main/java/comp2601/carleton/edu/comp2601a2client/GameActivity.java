@@ -40,9 +40,9 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.gameactivityview);
 
-        boolean isFirst = MainActivity.getInstance().isFirst;
+        final boolean isFirst = MainActivity.getInstance().isFirst;
 
         XMoves = new ArrayList<Integer>(); //Stores moves made by player
         OMoves = new ArrayList<Integer>(); //Stores moves made by Computer
@@ -72,7 +72,7 @@ public class GameActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //do start
-                if (isFirst) { //This fills list with all available buttons.
+                if (isFirst) { //This fil list with all available buttons.
                     for(int i=0; i<9; i++){
                         XOMoves.add(i);
                     }
